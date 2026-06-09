@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LedgerLayer</title>
+<meta name="description" content="LedgerLayer is the regulated AI financial command centre for affluent UK families." />
+<style>
+:root {
+  --bg: #0f1115;
+  --panel: #151924;
+  --panel-2: #1b2130;
+  --line: rgba(255,255,255,0.10);
+  --text: #f4f1ea;
+  --muted: rgba(244,241,234,0.72);
+  --faint: rgba(244,241,234,0.48);
+  --accent: #d0af4a;
+  --error: #ff5f7a;
+  --success: #5fd9a0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero {
+  padding: 96px 24px;
+}
+
+.hero h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 48px;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  font-size: 20px;
+  color: var(--muted);
+  margin-bottom: 32px;
+  max-width: 600px;
+}
+
+.cta-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 16px 32px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.cta-btn:hover {
+  background: #e0c050;
+  transform: translateY(-1px);
+}
+
+.section {
+  padding: 64px 24px;
+}
+
+.section h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 36px;
+  margin-bottom: 24px;
+}
+
+.section p {
+  font-size: 18px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.card {
+  background: var(--panel);
+  padding: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+
+.card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.table-wrap {
+  margin: 32px 0;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+th, td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  background: var(--panel-2);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+}
+
+tr:hover {
+  background: var(--panel-2);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.pricing-card {
+  background: var(--panel);
+  padding: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.pricing-card h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.pricing-card .price {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.pricing-card .sub {
+  color: var(--faint);
+  margin-bottom: 24px;
+}
+
+.pricing-card ul {
+  list-style: none;
+  margin-bottom: 24px;
+}
+
+.pricing-card ul li {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.footer {
+  padding: 64px 24px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.footer p {
+  font-size: 16px;
+  color: var(--faint);
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 36px;
+  }
+  .hero p {
+    font-size: 18px;
+  }
+  .section h2 {
+    font-size: 28px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="container">
+    <h1>LedgerLayer<br/>The wealth operating system for affluent UK families</h1>
+    <p>A regulated AI financial command centre that becomes your single operating system for wealth, trusts, investments, taxes, legal paperwork, insurance, and family permissions.</p>
+    <a href="#waitlist" class="cta-btn">Join the waitlist</a>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <h2>The gap LedgerLayer fills</h2>
+    <p>Affluent UK households pay £20k–35k/year for fragmented professional advice. Six to twelve advisers never speak to each other. No platform currently owns this relationship at the intelligence layer.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>AI document intelligence</h3>
+        <p>Upload wills, trust deeds, LPAs, property titles. AI indexes, summarises, flags outdated language, and alerts on expiry.</p>
+      </div>
+      <div class="card">
+        <h3>Live CGT + tax dashboard</h3>
+        <p>Updated with every transaction. Shows current-year position, allowance remaining, and projected January liability.</p>
+      </div>
+      <div class="card">
+        <h3>Family permissions</h3>
+        <p>Granular role-based access for spouse, child, executor, advisers. The first consumer platform modelling wealth as a permission graph.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <h2>Competitors</h2>
+    <div class="table-wrap">
+      <table>
+        <tr>
+          <th>Competitor</th>
+          <th>What they do</th>
+          <th>The gap LedgerLayer fills</th>
+        </tr>
+        <tr>
+          <td>Cleo / Emma / Plum</td>
+          <td>Budget tracking, spending nudges</td>
+          <td>Built for £30k earners, not £3M households. Zero legal or trust capability</td>
+        </tr>
+        <tr>
+          <td>Hargreves Lansdown</td>
+          <td>Investment platform</td>
+          <td>Holds your ISA, ignores everything else in your life</td>
+        </tr>
+        <tr>
+          <td>Traditional wealth managers</td>
+          <td>Human-only, expensive, non-digital</td>
+          <td>Legacy infrastructure, no AI, relationship manager changes every 18 months</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <h2>Pricing</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>Private</h3>
+        <div class="price">$149/mo</div>
+        <div class="sub">$1,788/yr</div>
+        <ul>
+          <li>HNW professional</li>
+          <li>Complex personal finances</li>
+          <li>Up to $2M assets</li>
+        </ul>
+        <a href="#waitlist" class="cta-btn">Get started</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Family</h3>
+        <div class="price">$399/mo</div>
+        <div class="sub">$4,788/yr</div>
+        <ul>
+          <li>Affluent family with trusts</li>
+          <li>Property, succession planning</li>
+          <li>Up to $10M assets</li>
+        </ul>
+        <a href="#waitlist" class="cta-btn">Get started</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Patriarch</h3>
+        <div class="price">Custom</div>
+        <div class="sub">UHNW</div>
+        <ul>
+          <li>Multi-generational family office</li>
+          <li>Boutique firms</li>
+          <li>$10M+ assets</li>
+        </ul>
+        <a href="#waitlist" class="cta-btn">Get started</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="waitlist">
+  <div class="container">
+    <h2>Join the waitlist</h2>
+    <p>LedgerLayer is a regulated AI platform. Access is by invitation only. Get early access to the platform.</p>
+    <form style="margin-top: 24px;">
+      <input type="email" placeholder="Enter your email" style="padding: 16px 24px; font-size: 16px; border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 4px; width: 320px; margin-right: 12px;">
+      <button type="submit" class="cta-btn" style="padding: 16px 32px; cursor: pointer;">Request access</button>
+    </form>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="container">
+    <p>LedgerLayer &copy; 2026. The regulated AI financial command centre for affluent UK families.</p>
+  </div>
+</div>
+
+</body>
+</html>
