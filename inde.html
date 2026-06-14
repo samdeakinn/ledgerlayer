@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LedgerLayer — Wealth Infrastructure for Affluent Households</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink:       #1a1a18;
+    --ink-mid:   #3d3d38;
+    --ink-light: #7a7a72;
+    --parchment: #f7f5f0;
+    --white:     #ffffff;
+    --rule:      #e2dfd7;
+    --gold:      #b89a5a;
+    --gold-pale: #e8dfc4;
+
+    --type-display: 'Cormorant Garamond', Georgia, serif;
+    --type-body:    'Inter', system-ui, sans-serif;
+
+    --space-xs:  0.5rem;
+    --space-sm:  1rem;
+    --space-md:  2rem;
+    --space-lg:  4rem;
+    --space-xl:  7rem;
+
+    --max-w: 1100px;
+    --max-prose: 640px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--type-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Typography scale ── */
+  h1, h2, h3, h4 {
+    font-family: var(--type-display);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 300; }
+  h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; }
+  h3 { font-size: clamp(1.25rem, 2.5vw, 1.8rem); }
+  h4 { font-size: 1.1rem; font-weight: 500; font-family: var(--type-body); letter-spacing: 0.04em; text-transform: uppercase; }
+
+  p { color: var(--ink-mid); line-height: 1.75; }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Layout helpers ── */
+  .container {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+  }
+
+  .section {
+    padding: var(--space-xl) 0;
+  }
+
+  .section--alt {
+    background: var(--parchment);
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--type-body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.4rem;
+  }
+
+  .rule {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: var(--space-md);
+  }
+
+  .prose { max-width: var(--max-prose); }
+
+  /* ── Nav ── */
+  #nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--type-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo span {
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--ink-mid);
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.3rem;
+    border: 1px solid var(--ink);
+    color: var(--ink) !important;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-cta:hover {
+    background: var(--ink);
+    color: var(--white) !important;
+  }
+
+  /* ── Hero ── */
+  #hero {
+    padding-top: calc(64px + var(--space-xl));
+    padding-bottom: var(--space-xl);
+    background: var(--white);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  .hero-content h1 {
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-content h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--ink-mid);
+    max-width: 480px;
+    margin-bottom: var(--space-lg);
+    line-height: 1.8;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1rem 2rem;
+    background: var(--ink);
+    color: var(--white);
+    border: 1px solid var(--ink);
+    transition: background 0.25s, color 0.25s;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--ink-mid);
+    border-color: var(--ink-mid);
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  /* ── Product mockup panel ── */
+  .hero-panel {
+    background: var(--parchment);
+    border: 1px solid var(--rule);
+    padding: 1.75rem;
+    position: relative;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .panel-title {
+    font-family: var(--type-body);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+  }
+
+  .panel-badge {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--gold-pale);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+
+  .panel-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-stat {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    padding: 1rem 1.1rem;
+  }
+
+  .panel-stat-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.35rem;
+  }
+
+  .panel-stat-value {
+    font-family: var(--type-display);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .panel-stat-sub {
+    font-size: 0.68rem;
+    color: var(--ink-light);
+    margin-top: 0.2rem;
+  }
+
+  .panel-list {
+    list-style: none;
+    border-top: 1px solid var(--rule);
+    padding-top: 1rem;
+  }
+
+  .panel-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-mid);
+  }
+
+  .panel-list li:last-child { border-bottom: none; }
+
+  .panel-tag {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .tag-green  { background: #e6f4ee; color: #2d7a4f; }
+  .tag-amber  { background: #fdf3e2; color: #9a6c1a; }
+  .tag-neutral { background: #f0eeea; color: var(--ink-light); }
+
+  /* ── What is LedgerLayer ── */
+  #positioning .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .positioning-left {}
+  .positioning-right {
+    padding-top: 0.5rem;
+  }
+
+  .positioning-right p + p { margin-top: var(--space-sm); }
+
+  .stat-trio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    margin-top: var(--space-lg);
+    border: 1px solid var(--rule);
+  }
+
+  .stat-item {
+    background: var(--parchment);
+    padding: var(--space-md) 1.2rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: var(--type-display);
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--ink-light);
+  }
+
+  /* ── Problem ── */
+  #problem .container {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .problem-cards {
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  .problem-card {
+    background: var(--white);
+    padding: 1.5rem var(--space-md);
+  }
+
+  .problem-card-number {
+    font-family: var(--type-display);
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--rule);
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+
+  .problem-card h3 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    font-family: var(--type-body);
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .problem-card p {
+    font-size: 0.88rem;
+    color: var(--ink-light);
+  }
+
+  /* ── Difference ── */
+  #difference {}
+
+  #difference .intro-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    align-items: start;
+  }
+
+  #difference .intro-grid p + p { margin-top: var(--space-sm); }
+
+  /* Comparison table */
+  .compare-table-wrap {
+    border: 1px solid var(--rule);
+    overflow-x: auto;
+  }
+
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+  }
+
+  .compare-table thead tr {
+    background: var(--ink);
+    color: var(--white);
+  }
+
+  .compare-table th {
+    padding: 1rem 1.4rem;
+    text-align: left;
+    font-family: var(--type-body);
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .compare-table th:first-child { color: var(--gold-pale); }
+  .compare-table th:nth-child(4) { color: var(--gold); }
+
+  .compare-table td {
+    padding: 1rem 1.4rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-mid);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .compare-table td:first-child {
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+  }
+
+  .compare-table td:nth-child(4) {
+    color: var(--ink);
+  }
+
+  .compare-table tbody tr:last-child td { border-bottom: none; }
+  .compare-table tbody tr:nth-child(odd) td { background: var(--parchment); }
+  .compare-table tbody tr:nth-child(even) td { background: var(--white); }
+
+  .check { color: var(--gold); font-size: 0.9rem; }
+  .cross { color: #c0b8ae; }
+
+  /* ── How it works ── */
+  #how-it-works .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: var(--space-lg);
+  }
+
+  .step {
+    background: var(--white);
+    padding: var(--space-md) 1.5rem var(--space-lg);
+    position: relative;
+  }
+
+  .step-num {
+    font-family: var(--type-display);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--rule);
+    line-height: 1;
+    margin-bottom: 1.2rem;
+  }
+
+  .step h3 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    font-family: var(--type-body);
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+
+  .step p {
+    font-size: 0.84rem;
+    color: var(--ink-light);
+    line-height: 1.7;
+  }
+
+  /* ── Features ── */
+  #features .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+  }
+
+  .feature-card {
+    padding: var(--space-md);
+    border: 1px solid var(--rule);
+    background: var(--white);
+    transition: border-color 0.2s;
+  }
+
+  .feature-card:hover { border-color: var(--gold); }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 1.2rem;
+    opacity: 0.6;
+  }
+
+  .feature-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: var(--type-body);
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.01em;
+  }
+
+  .feature-card p {
+    font-size: 0.84rem;
+    color: var(--ink-light);
+    line-height: 1.7;
+  }
+
+  /* ── Final CTA ── */
+  #cta {
+    padding: var(--space-xl) 0;
+    background: var(--ink);
+  }
+
+  #cta .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+
+  #cta h2 {
+    color: var(--white);
+    font-weight: 300;
+  }
+
+  #cta h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  #cta p {
+    color: #a09d97;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .cta-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .btn-primary--light {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1rem 2rem;
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--white);
+    transition: background 0.25s, color 0.25s;
+    cursor: pointer;
+  }
+
+  .btn-primary--light:hover {
+    background: var(--parchment);
+    border-color: var(--parchment);
+  }
+
+  .btn-secondary--light {
+    display: inline-block;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a7a72;
+    border-bottom: 1px solid #3d3d38;
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-secondary--light:hover {
+    color: var(--white);
+    border-color: #7a7a72;
+  }
+
+  /* ── Footer ── */
+  #footer {
+    background: var(--ink);
+    border-top: 1px solid #2a2a26;
+    padding: var(--space-md) 0;
+  }
+
+  .footer-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 0 var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: var(--type-display);
+    font-size: 1rem;
+    color: #7a7a72;
+    letter-spacing: -0.01em;
+  }
+
+  .footer-copy {
+    font-size: 0.72rem;
+    color: #4a4a44;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Divider line ── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-panel { display: none; }
+    #positioning .container { grid-template-columns: 1fr; }
+    .stat-trio { grid-template-columns: repeat(3, 1fr); }
+    #problem .container { grid-template-columns: 1fr; }
+    #difference .intro-grid { grid-template-columns: 1fr; }
+    #how-it-works .steps { grid-template-columns: repeat(2, 1fr); }
+    #features .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    #cta .container { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    :root {
+      --space-xl: 4rem;
+      --space-lg: 2.5rem;
+    }
+
+    .nav-links { display: none; }
+    .stat-trio { grid-template-columns: 1fr; }
+    #how-it-works .steps { grid-template-columns: 1fr; }
+    #features .feature-grid { grid-template-columns: 1fr; }
+    .panel-summary { grid-template-columns: 1fr 1fr; }
+    .compare-table th, .compare-table td { padding: 0.75rem 0.9rem; font-size: 0.78rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ── Navigation ── -->
+<nav id="nav" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Ledger<span>Layer</span></a>
+    <ul class="nav-links">
+      <li><a href="#positioning">About</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#features">Capabilities</a></li>
+      <li><a href="#cta" class="nav-cta">Request access</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+
+      <div class="hero-content">
+        <span class="eyebrow">Wealth infrastructure</span>
+        <h1>Your household's<br>financial life,<br><em>properly structured.</em></h1>
+        <p class="hero-sub">LedgerLayer consolidates assets, entities, advisers, and obligations into a single authoritative view — built for the complexity of affluent households, not simplified away from it.</p>
+        <div class="btn-group">
+          <a href="#cta" class="btn-primary">Request access</a>
+          <a href="#how-it-works" class="btn-secondary">See how it works</a>
+        </div>
+      </div>
+
+      <div class="hero-panel" aria-hidden="true">
+        <div class="panel-header">
+          <span class="panel-title">Household overview</span>
+          <span class="panel-badge">Live</span>
+        </div>
+
+        <div class="panel-summary">
+          <div class="panel-stat">
+            <div class="panel-stat-label">Net position</div>
+            <div class="panel-stat-value">£4.2M</div>
+            <div class="panel-stat-sub">Across 6 structures</div>
+          </div>
+          <div class="panel-stat">
+            <div class="panel-stat-label">Tax exposure</div>
+            <div class="panel-stat-value">£183K</div>
+            <div class="panel-stat-sub">Current year estimate</div>
+          </div>
+          <div class="panel-stat">
+            <div class="panel-stat-label">Entities</div>
+            <div class="panel-stat-value">4</div>
+            <div class="panel-stat-sub">Trust · Ltd · SIPP · ISA</div>
+          </div>
+          <div class="panel-stat">
+            <div class="panel-stat-label">Advisers</div>
+            <div class="panel-stat-value">3</div>
+            <div class="panel-stat-sub">With role-based access</div>
+          </div>
+        </div>
+
+        <ul class="panel-list">
+          <li>
+            <span>Q4 CGT review</span>
+            <span class="panel-tag tag-amber">Due 28 Nov</span>
+          </li>
+          <li>
+            <span>Trust distribution memo</span>
+            <span class="panel-tag tag-green">Signed</span>
+          </li>
+          <li>
+            <span>ISA rebalance</span>
+            <span class="panel-tag tag-neutral">Pending</span>
+          </li>
+          <li>
+            <span>Mortgage renewal — Primary</span>
+            <span class="panel-tag tag-amber">In 60 days</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── Positioning ── -->
+<section id="positioning" class="section">
+  <div class="container">
+
+    <div>
+      <span class="eyebrow">What LedgerLayer is</span>
+      <h2>The infrastructure layer<br>your wealth has been missing.</h2>
+    </div>
+
+    <div style="height: var(--space-md);"></div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: start;">
+      <div>
+        <p>Most households at this level of complexity hold assets across trusts, companies, pensions, and investment accounts — each managed by a different adviser, tracked in a different system, reported in a different format.</p>
+        <p style="margin-top: 1rem;">LedgerLayer is the authoritative record that sits above all of them. It consolidates positions, surfaces obligations, controls adviser permissions, and gives you — and the people you choose — a complete, structured view of your household's financial life.</p>
+      </div>
+      <div>
+        <p>It is not a portfolio tracker. It is not accounting software. It is not a dashboard bolted onto a bank account.</p>
+        <p style="margin-top: 1rem;">It is the system of record that wealth at scale has always required — and that, until now, simply did not exist as a product.</p>
+      </div>
+    </div>
+
+    <div class="stat-trio">
+      <div class="stat-item">
+        <div class="stat-number">6–12</div>
+        <div class="stat-label">Advisers a typical household manages independently</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4+</div>
+        <div class="stat-label">Legal and financial structures held simultaneously</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Existing tools built for this level of household complexity</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── Problem ── -->
+<section id="problem" class="section section--alt">
+  <div class="container">
+
+    <div style="display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-lg); align-items: start;">
+
+      <div>
+        <span class="eyebrow">The problem</span>
+        <h2>Complexity<br>without structure.</h2>
+        <p style="margin-top: 1rem;">As wealth grows, the number of moving parts multiplies. Most households manage this with a collection of spreadsheets, email threads, and quarterly PDF reports from advisers who do not speak to each other.</p>
+        <p style="margin-top: 1rem;">The result is a picture that is always partial, often delayed, and impossible to act on with confidence.</p>
+      </div>
+
+      <div class="problem-cards">
+        <div class="problem-card">
+          <div class="problem-card-number">01</div>
+          <h3>No single source of truth</h3>
+          <p>Assets are held across institutions, each with its own reporting cadence and format. Consolidation is manual, slow, and error-prone.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-number">02</div>
+          <h3>Advisers operating in silos</h3>
+          <p>Your solicitor, accountant, wealth manager, and IFA each hold a fragment of the picture. Coordination between them falls to you.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-number">03</div>
+          <h3>Obligations tracked by memory</h3>
+          <p>Tax deadlines, trust reviews, and mortgage renewals live in inboxes or calendars rather than a system that surfaces them in advance.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-number">04</div>
+          <h3>Permissions managed informally</h3>
+          <p>Deciding who can see what — and acting when that changes — happens by email, with no audit trail and no consistency.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── Difference ── -->
+<section id="difference" class="section">
+  <div class="container">
+
+    <div class="intro-grid">
+      <div>
+        <span class="eyebrow">Why existing tools fall short</span>
+        <h2>Built for a different<br>kind of household.</h2>
+      </div>
+      <div>
+        <p>Consumer finance apps are designed for simplicity. Institutional platforms are designed for institutions. Neither is designed for the reality of a complex household — multiple entities, delegated authority, professional adviser relationships, and the need for control without being the one doing the administration.</p>
+        <p style="margin-top: 1rem;">LedgerLayer is designed specifically for that gap.</p>
+      </div>
+    </div>
+
+    <div class="compare-table-wrap">
+      <table class="compare-table" role="table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Consumer apps</th>
+            <th>Institutional platforms</th>
+            <th>LedgerLayer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Multi-entity household view</td>
+            <td><span class="cross">—</span></td>
+            <td><span class="cross">Partial</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Adviser permission management</td>
+            <td><span class="cross">—</span></td>
+            <td><span class="cross">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Trust and legal structure tracking</td>
+            <td><span class="cross">—</span></td>
+            <td><span class="cross">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Tax obligation calendar</td>
+            <td><span class="cross">Basic</span></td>
+            <td><span class="cross">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Document and correspondence vault</td>
+            <td><span class="cross">—</span></td>
+            <td><span class="cross">Limited</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Household member access controls</td>
+            <td><span class="cross">—</span></td>
+            <td><span class="cross">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Designed for non-institutional users</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">—</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── How it works ── -->
+<section id="how-it-works" class="section section--alt">
+  <div class="container">
+
+    <span class="eyebrow">How it works</span>
+    <h2>From fragmented<br>to structured, in four steps.</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Map your household</h3>
+        <p>Define your household's structure: the individuals, entities, trusts, companies, and accounts that make up your financial life. This becomes the foundation everything else is organised around.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Connect your positions</h3>
+        <p>Link accounts and holdings to the correct entity. LedgerLayer aggregates across institutions and gives you a consolidated view at both the entity and household level.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Assign access</h3>
+        <p>Give each adviser, family member, or executor precisely the visibility they need. Access is role-based, logged, and revocable — with no ambiguity about who can see what.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Stay informed</h3>
+        <p>Obligations, deadlines, and portfolio changes surface automatically. You spend less time assembling information and more time acting on it.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── Features ── -->
+<section id="features" class="section">
+  <div class="container">
+
+    <span class="eyebrow">Capabilities</span>
+    <h2>What LedgerLayer<br>holds together.</h2>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="4" y="8" width="28" height="20" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4 14h28" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 20h6M10 24h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Tax & obligations</h3>
+        <p>Capital gains, income tax, trust distributions, and filing deadlines are tracked against your actual positions. Nothing is missed because no one was looking.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 4L6 10v8c0 7 5 12 12 14 7-2 12-7 12-14v-8L18 4z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12 18l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Legal structure tracking</h3>
+        <p>Trusts, limited companies, SIPPs, and offshore structures each sit in the right place within your household map, with key documents attached and review dates visible.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M16 14l4 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Adviser permissions</h3>
+        <p>Each professional sees only what their role requires. Access is granted explicitly, scoped precisely, and withdrawn cleanly — with a full log of who viewed what and when.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="5" y="5" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="21" y="5" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="5" y="21" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="21" y="21" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <h3>Household entity view</h3>
+        <p>See your entire household — every person, entity, and account — in a single structured view. Drill into any entity or surface the aggregate. Both are one click away.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M8 28V16M14 28V10M20 28V19M26 28V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Consolidated reporting</h3>
+        <p>Produce a consistent view of household net worth, asset allocation, and income across all structures — formatted for your use or shared directly with advisers.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 28V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M18 10l-8 10h16L18 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M26 28V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6 20h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Succession readiness</h3>
+        <p>Maintain a document vault with wills, trust deeds, powers of attorney, and beneficiary designations — accessible to the right people at the right time, including when it matters most.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Final CTA ── -->
+<section id="cta">
+  <div class="container">
+
+    <div>
+      <span class="eyebrow" style="color: var(--gold);">Early access</span>
+      <h2>Structured wealth<br>starts with a<br><em>structured foundation.</em></h2>
+      <p>LedgerLayer is currently in private access. We are working with a select number of households and their advisers during this period.</p>
+    </div>
+
+    <div class="cta-right">
+      <p style="color: #7a7a72; font-size: 0.82rem; margin-top: 0;">If your household's complexity has outgrown the tools available to you, we would like to speak with you.</p>
+      <a href="mailto:access@ledgerlayer.com" class="btn-primary--light">Request access</a>
+      <a href="mailto:advisers@ledgerlayer.com" class="btn-secondary--light">Adviser enquiry</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer id="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">LedgerLayer</span>
+    <span class="footer-copy">&copy; 2025 LedgerLayer. All rights reserved.</span>
+  </div>
+</footer>
+
+</body>
+</html>
