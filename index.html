@@ -1049,7 +1049,63 @@
     </div>
   </div>
 </section>
+<div class="waitlist-left reveal">
+    <span class="eyebrow">Early access</span>
+    <h2>Join a select group<br>of early households<br>and <em>their advisers.</em></h2>
+    <p class="waitlist-note">Access is limited. Your responses help us prioritise the features that matter most.</p>
+  </div>
 
+  <div class="waitlist-right reveal reveal-delay-1">
+    <form id="waitlist-form" novalidate>
+
+      <div class="wl-field">
+        <label for="wl-name">Full name</label>
+        <input type="text" id="wl-name" name="name" autocomplete="name" placeholder="Your full name" required>
+      </div>
+
+      <div class="wl-field">
+        <label for="wl-email">Email address</label>
+        <input type="email" id="wl-email" name="email" autocomplete="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="wl-field">
+        <label>What best describes your situation? <span class="wl-optional">(optional)</span></label>
+        <div class="wl-options">
+          <label class="wl-option">
+            <input type="radio" name="situation" value="complex">
+            <span>Complex household finances</span>
+          </label>
+          <label class="wl-option">
+            <input type="radio" name="situation" value="trusts">
+            <span>Trusts / family entities</span>
+          </label>
+          <label class="wl-option">
+            <input type="radio" name="situation" value="adviser">
+            <span>Adviser / wealth professional</span>
+          </label>
+          <label class="wl-option">
+            <input type="radio" name="situation" value="other">
+            <span>Other</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="wl-error" id="wl-error" aria-live="polite"></div>
+
+      <button type="submit" class="btn-primary wl-submit">Request early access</button>
+
+    </form>
+
+    <div id="waitlist-success" class="wl-success" hidden>
+      <div class="wl-success-inner">
+        <span class="wl-success-mark">&#10003;</span>
+        <h3>You're on the list.</h3>
+        <p>We'll be in touch as access opens. In the meantime, we're reviewing responses to shape what we build first.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
 <!-- CTA -->
 <section id="cta">
   <div class="container">
