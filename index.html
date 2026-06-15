@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LedgerLayer — Wealth Infrastructure for Affluent Households</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #0d0d0b;
+  --bg-raised:    #131310;
+  --bg-card:      #181815;
+  --border:       #2a2a25;
+  --border-hi:    #3a3a33;
+  --text:         #e8e4da;
+  --text-mid:     #9e9a8e;
+  --text-dim:     #5a5a52;
+  --gold:         #c4a35a;
+  --gold-dim:     #7a6030;
+  --gold-glow:    rgba(196,163,90,0.08);
+  --gold-pale:    rgba(196,163,90,0.12);
+  --type-display: 'Cormorant Garamond', Georgia, serif;
+  --type-body:    'Inter', system-ui, sans-serif;
+  --space-sm:  1rem;
+  --space-md:  2rem;
+  --space-lg:  4rem;
+  --space-xl:  7rem;
+  --max-w: 1100px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--type-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--type-display);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); font-weight: 300; }
+h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300; }
+h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); }
+
+p { color: var(--text-mid); line-height: 1.75; }
+a { color: inherit; text-decoration: none; }
+
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--space-md); }
+.section { padding: var(--space-xl) 0; }
+.section--alt { background: var(--bg-raised); }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--type-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.4rem;
+}
+
+.section-divider { width: 100%; height: 1px; background: var(--border); }
+
+/* Scroll-reveal */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* Buttons */
+.btn-primary {
+  display: inline-block;
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.9rem 1.9rem;
+  background: var(--gold); color: #0d0d0b; border: 1px solid var(--gold);
+  transition: background 0.25s, transform 0.2s; cursor: pointer;
+}
+.btn-primary:hover { background: #d4b46a; border-color: #d4b46a; transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-block;
+  font-size: 0.78rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-mid); border-bottom: 1px solid var(--border-hi); padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s; cursor: pointer;
+}
+.btn-secondary:hover { color: var(--text); border-color: var(--text-dim); }
+
+.btn-ghost {
+  display: inline-block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dim); border-bottom: 1px solid var(--border-hi); padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; font-family: var(--type-body);
+}
+.btn-ghost:hover { color: var(--text-mid); border-color: var(--text-dim); }
+
+
+/* ═══════════════════════════════════════════
+   VIEW SYSTEM — show/hide pages
+═══════════════════════════════════════════ */
+.view { display: none; }
+.view.active { display: block; }
+
+
+/* ═══════════════════════════════════════════
+   LANDING PAGE
+═══════════════════════════════════════════ */
+
+/* Nav */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(13,13,11,0.88);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 var(--space-md);
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-logo { font-family: var(--type-display); font-size: 1.35rem; font-weight: 500; color: var(--text); letter-spacing: -0.02em; }
+.nav-logo span { color: var(--gold); }
+
+.nav-links { display: flex; align-items: center; gap: var(--space-md); list-style: none; }
+.nav-links a { font-size: 0.8rem; font-weight: 400; letter-spacing: 0.05em; color: var(--text-mid); transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+.nav-cta {
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.5rem 1.2rem; border: 1px solid var(--border-hi); color: var(--text) !important;
+  transition: border-color 0.2s, background 0.2s; cursor: pointer;
+}
+.nav-cta:hover { border-color: var(--gold); background: var(--gold-glow); }
+
+/* Hero */
+#hero {
+  padding-top: calc(64px + var(--space-xl)); padding-bottom: var(--space-xl);
+  position: relative; overflow: hidden;
+}
+#hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px; opacity: 0.3;
+  mask-image: radial-gradient(ellipse 80% 60% at 60% 50%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 60% 50%, black 0%, transparent 70%);
+  pointer-events: none;
+}
+#hero::after {
+  content: ''; position: absolute; top: 10%; right: -5%; width: 55%; height: 70%;
+  background: radial-gradient(ellipse at center, rgba(196,163,90,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: center; position: relative; z-index: 1; }
+.hero-content h1 { margin-bottom: var(--space-md); }
+.hero-content h1 em { font-style: italic; color: var(--gold); }
+.hero-sub { font-size: 1.05rem; color: var(--text-mid); max-width: 480px; margin-bottom: var(--space-lg); line-height: 1.8; }
+.btn-group { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+
+/* Hero panel */
+.hero-panel {
+  background: var(--bg-card); border: 1px solid var(--border); padding: 1.75rem;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+  animation: panelFloat 6s ease-in-out infinite;
+}
+@keyframes panelFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+.panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.panel-title { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.panel-badge { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--gold-pale); padding: 0.2rem 0.6rem; border: 1px solid var(--gold-dim); display: flex; align-items: center; gap: 0.4rem; }
+.pulse-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+.panel-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin-bottom: 1px; }
+.panel-stat { background: var(--bg-raised); padding: 1rem 1.1rem; }
+.panel-stat-label { font-size: 0.63rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.35rem; }
+.panel-stat-value { font-family: var(--type-display); font-size: 1.6rem; font-weight: 400; color: var(--text); line-height: 1; }
+.panel-stat-sub { font-size: 0.65rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+.panel-list { list-style: none; background: var(--border); display: flex; flex-direction: column; gap: 1px; margin-top: 1px; }
+.panel-list li { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-mid); background: var(--bg-card); padding: 0.65rem 0; }
+.panel-tag { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.5rem; }
+.tag-amber  { background: rgba(180,120,20,0.15); color: #c4953a; border: 1px solid rgba(180,120,20,0.25); }
+.tag-green  { background: rgba(40,140,80,0.12);  color: #4aab72; border: 1px solid rgba(40,140,80,0.2); }
+.tag-neutral { background: var(--bg-raised); color: var(--text-dim); border: 1px solid var(--border); }
+
+/* Positioning */
+#positioning .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-top: var(--space-md); align-items: start; }
+#positioning .pos-grid p + p { margin-top: 1rem; }
+
+.stat-trio { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); margin-top: var(--space-lg); border: 1px solid var(--border); }
+.stat-item { background: var(--bg-card); padding: var(--space-md) 1.2rem; text-align: center; transition: background 0.3s; }
+.stat-item:hover { background: var(--bg-raised); }
+.stat-number { font-family: var(--type-display); font-size: 2.6rem; font-weight: 300; color: var(--gold); line-height: 1; margin-bottom: 0.4rem; }
+.stat-label { font-size: 0.72rem; letter-spacing: 0.04em; color: var(--text-dim); }
+
+/* Problem */
+#problem .prob-grid { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-lg); align-items: start; }
+.problem-cards { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.problem-card { background: var(--bg-card); padding: 1.5rem var(--space-md); transition: background 0.3s; }
+.problem-card:hover { background: var(--bg-raised); }
+.problem-card-number { font-family: var(--type-display); font-size: 2rem; font-weight: 300; color: var(--border-hi); margin-bottom: 0.5rem; line-height: 1; }
+.problem-card h3 { font-size: 1rem; font-weight: 500; font-family: var(--type-body); color: var(--text); margin-bottom: 0.5rem; }
+.problem-card p { font-size: 0.86rem; color: var(--text-dim); }
+
+/* Difference */
+#difference .intro-grid { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-lg); margin-bottom: var(--space-lg); align-items: start; }
+#difference .intro-grid p + p { margin-top: 1rem; }
+.compare-table-wrap { border: 1px solid var(--border); overflow-x: auto; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.compare-table thead tr { background: var(--bg-raised); }
+.compare-table th { padding: 1rem 1.4rem; text-align: left; font-family: var(--type-body); font-weight: 400; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+.compare-table th:nth-child(4) { color: var(--gold); }
+.compare-table td { padding: 0.9rem 1.4rem; border-bottom: 1px solid var(--border); color: var(--text-mid); vertical-align: middle; }
+.compare-table td:first-child { font-weight: 500; color: var(--text); font-size: 0.8rem; }
+.compare-table td:nth-child(4) { color: var(--gold); }
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table tbody tr { background: var(--bg-card); transition: background 0.2s; }
+.compare-table tbody tr:nth-child(even) { background: var(--bg-raised); }
+.compare-table tbody tr:hover { background: rgba(196,163,90,0.04); }
+.check { color: var(--gold); }
+.cross { color: var(--text-dim); }
+
+/* How it works */
+#how-it-works .steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: var(--space-lg); }
+.step { background: var(--bg-card); padding: var(--space-md) 1.5rem var(--space-lg); transition: background 0.3s; }
+.step:hover { background: var(--bg-raised); }
+.step-num { font-family: var(--type-display); font-size: 3rem; font-weight: 300; color: var(--border-hi); line-height: 1; margin-bottom: 1.2rem; }
+.step h3 { font-size: 1rem; font-weight: 500; font-family: var(--type-body); color: var(--text); margin-bottom: 0.6rem; }
+.step p { font-size: 0.83rem; color: var(--text-dim); line-height: 1.7; }
+
+/* Features */
+#features .feature-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: var(--space-lg); }
+.feature-card { background: var(--bg-card); padding: var(--space-md); transition: background 0.3s; }
+.feature-card:hover { background: var(--bg-raised); }
+.feature-card:hover .feature-icon { color: var(--gold); }
+.feature-icon { width: 32px; height: 32px; margin-bottom: 1.2rem; color: var(--text-dim); transition: color 0.3s; }
+.feature-card h3 { font-size: 0.95rem; font-weight: 500; font-family: var(--type-body); color: var(--text); margin-bottom: 0.6rem; }
+.feature-card p { font-size: 0.83rem; color: var(--text-dim); line-height: 1.7; }
+
+/* Waitlist */
+#waitlist { padding: var(--space-xl) 0; background: var(--bg); border-top: 1px solid var(--border); }
+.waitlist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: start; }
+.waitlist-note { margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-dim); line-height: 1.7; max-width: 320px; }
+.waitlist-right { background: var(--bg-card); border: 1px solid var(--border); padding: var(--space-md); }
+.wl-field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.4rem; }
+.wl-field > label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+.wl-optional { font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--text-dim); font-size: 0.68rem; }
+.wl-field input[type="text"], .wl-field input[type="email"] { background: var(--bg-raised); border: 1px solid var(--border); color: var(--text); font-family: var(--type-body); font-size: 0.88rem; padding: 0.75rem 1rem; outline: none; transition: border-color 0.2s; width: 100%; }
+.wl-field input[type="text"]::placeholder, .wl-field input[type="email"]::placeholder { color: var(--text-dim); }
+.wl-field input[type="text"]:focus, .wl-field input[type="email"]:focus { border-color: var(--gold-dim); }
+.wl-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.wl-option { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.9rem; background: var(--bg-raised); cursor: pointer; transition: background 0.2s; font-size: 0.8rem; color: var(--text-mid); }
+.wl-option:hover { background: var(--bg-card); }
+.wl-option input[type="radio"] { appearance: none; -webkit-appearance: none; width: 14px; height: 14px; border: 1px solid var(--border-hi); border-radius: 50%; flex-shrink: 0; transition: border-color 0.2s, background 0.2s; position: relative; cursor: pointer; }
+.wl-option input[type="radio"]:checked { border-color: var(--gold); background: var(--gold); }
+.wl-option input[type="radio"]:checked::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--bg); }
+.wl-option input[type="radio"]:checked + span { color: var(--text); }
+.wl-error { font-size: 0.75rem; color: #c46a4a; margin-bottom: 1rem; min-height: 1rem; }
+.wl-submit { width: 100%; text-align: center; }
+.wl-success { display: flex; align-items: flex-start; }
+.wl-success-inner { padding: var(--space-sm) 0; }
+.wl-success-mark { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid var(--gold-dim); color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; }
+.wl-success-inner h3 { font-family: var(--type-display); font-size: 1.6rem; font-weight: 300; color: var(--text); margin-bottom: 0.75rem; }
+.wl-success-inner p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.75; max-width: 340px; }
+
+/* CTA strip */
+#cta { padding: var(--space-lg) 0; background: var(--bg-raised); border-top: 1px solid var(--border); }
+#cta .container { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); flex-wrap: wrap; }
+#cta p { font-size: 0.85rem; color: var(--text-dim); margin: 0; }
+.cta-actions { display: flex; gap: 1rem; align-items: center; flex-shrink: 0; }
+
+/* Footer */
+#footer { background: var(--bg); border-top: 1px solid var(--border); padding: var(--space-md) 0; }
+.footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--space-md); display: flex; align-items: center; justify-content: space-between; }
+.footer-logo { font-family: var(--type-display); font-size: 1rem; color: var(--text-dim); }
+.footer-copy { font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.04em; }
+
+
+/* ═══════════════════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════════════════ */
+#view-login {
+  min-height: 100vh;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+#view-login.active { display: flex; }
+
+#view-login::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px; opacity: 0.2; pointer-events: none;
+}
+#view-login::after {
+  content: ''; position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 60%;
+  background: radial-gradient(ellipse at center, rgba(196,163,90,0.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.login-box {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 420px;
+  margin: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 2.5rem;
+}
+
+.login-logo {
+  font-family: var(--type-display);
+  font-size: 1.5rem; font-weight: 500;
+  color: var(--text); letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+  display: block;
+}
+.login-logo span { color: var(--gold); }
+
+.login-heading {
+  font-family: var(--type-display);
+  font-size: 1.8rem; font-weight: 300;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.login-sub {
+  font-size: 0.82rem; color: var(--text-dim);
+  margin-bottom: 2rem; line-height: 1.6;
+}
+
+.login-hint {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.8rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.login-hint strong { color: var(--gold); font-weight: 500; display: block; margin-bottom: 0.2rem; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+.login-field { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+.login-field label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+.login-field input {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--type-body); font-size: 0.9rem;
+  padding: 0.8rem 1rem; outline: none; transition: border-color 0.2s; width: 100%;
+}
+.login-field input::placeholder { color: var(--text-dim); }
+.login-field input:focus { border-color: var(--gold-dim); }
+
+.login-error { font-size: 0.73rem; color: #c46a4a; min-height: 1.1rem; margin-bottom: 0.5rem; }
+
+.login-submit {
+  width: 100%; padding: 0.9rem;
+  background: var(--gold); color: #0d0d0b;
+  border: 1px solid var(--gold); font-family: var(--type-body);
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s, transform 0.15s;
+  margin-top: 0.5rem;
+}
+.login-submit:hover { background: #d4b46a; border-color: #d4b46a; transform: translateY(-1px); }
+
+.login-back {
+  display: block; margin-top: 1.4rem; text-align: center;
+  font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dim); cursor: pointer; transition: color 0.2s;
+  background: none; border: none; font-family: var(--type-body); width: 100%;
+}
+.login-back:hover { color: var(--text-mid); }
+
+
+/* ═══════════════════════════════════════════
+   DASHBOARD / APP SHELL
+═══════════════════════════════════════════ */
+#view-app { display: none; min-height: 100vh; flex-direction: column; }
+#view-app.active { display: flex; }
+
+/* App nav */
+.app-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(13,13,11,0.92);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.app-nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 var(--space-md);
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+}
+.app-logo { font-family: var(--type-display); font-size: 1.2rem; font-weight: 500; color: var(--text); letter-spacing: -0.02em; }
+.app-logo span { color: var(--gold); }
+
+.app-nav-links { display: flex; gap: 1.5rem; list-style: none; }
+.app-nav-links a { font-size: 0.75rem; letter-spacing: 0.06em; color: var(--text-dim); transition: color 0.2s; cursor: pointer; }
+.app-nav-links a:hover { color: var(--text); }
+.app-nav-links a.active { color: var(--text); border-bottom: 1px solid var(--gold); padding-bottom: 1px; }
+
+.app-nav-right { display: flex; align-items: center; gap: 1.2rem; }
+.app-user { font-size: 0.75rem; color: var(--text-dim); }
+.app-signout {
+  font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dim); border: 1px solid var(--border); padding: 0.35rem 0.8rem;
+  background: none; font-family: var(--type-body); cursor: pointer; transition: border-color 0.2s, color 0.2s;
+}
+.app-signout:hover { border-color: var(--border-hi); color: var(--text-mid); }
+
+/* App content */
+.app-content { flex: 1; max-width: 1200px; margin: 0 auto; padding: 2rem var(--space-md); width: 100%; }
+
+/* Household overview */
+.ho-header { padding-bottom: var(--space-sm); border-bottom: 1px solid var(--border); margin-bottom: var(--space-md); }
+.ho-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.ho-household-name { font-family: var(--type-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 300; color: var(--text); margin-bottom: 0.4rem; }
+.ho-household-desc { font-size: 0.83rem; color: var(--text-dim); max-width: 540px; line-height: 1.6; }
+.ho-badge-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.ho-badge { font-size: 0.63rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.22rem 0.65rem; border: 1px solid var(--border-hi); color: var(--text-dim); background: var(--bg-raised); }
+.ho-badge--gold { border-color: var(--gold-dim); color: var(--gold); background: var(--gold-pale); }
+
+/* Snapshot */
+.ho-snapshot { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: var(--space-md); }
+.ho-snap-tile { background: var(--bg-card); padding: 1.4rem var(--space-md); display: flex; flex-direction: column; gap: 0.25rem; transition: background 0.25s; }
+.ho-snap-tile:hover { background: var(--bg-raised); }
+.ho-snap-label { font-size: 0.63rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.ho-snap-number { font-family: var(--type-display); font-size: 2.8rem; font-weight: 300; color: var(--text); line-height: 1; }
+.ho-snap-sub { font-size: 0.73rem; color: var(--text-dim); margin-top: 0.1rem; }
+.ho-snap-link { display: inline-block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-top: 0.5rem; border-bottom: 1px solid var(--gold-dim); padding-bottom: 1px; width: fit-content; transition: color 0.2s; cursor: pointer; }
+.ho-snap-link:hover { color: #d4b46a; }
+
+/* Structure */
+.ho-structure { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: var(--space-md); }
+.ho-panel { background: var(--bg-card); padding: var(--space-md); }
+.ho-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.ho-panel-title { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.ho-btn-ghost { font-size: 0.67rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); border: 1px solid var(--border-hi); padding: 0.32rem 0.75rem; background: transparent; cursor: pointer; transition: border-color 0.2s, color 0.2s; font-family: var(--type-body); }
+.ho-btn-ghost:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+.ho-person-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+.ho-person-row { display: flex; align-items: center; gap: 0.9rem; padding: 0.85rem 1rem; background: var(--bg-raised); cursor: pointer; transition: background 0.2s; }
+.ho-person-row:hover { background: var(--bg); }
+.ho-avatar { width: 30px; height: 30px; border: 1px solid var(--border-hi); background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-family: var(--type-display); font-size: 0.85rem; color: var(--gold); flex-shrink: 0; }
+.ho-person-info { flex: 1; min-width: 0; }
+.ho-person-name { font-size: 0.83rem; font-weight: 500; color: var(--text); margin-bottom: 0.15rem; }
+.ho-person-roles { font-size: 0.7rem; color: var(--text-dim); line-height: 1.4; }
+.ho-chevron { color: var(--border-hi); font-size: 0.75rem; flex-shrink: 0; }
+
+.ho-entity-group { margin-bottom: 1.1rem; }
+.ho-entity-group:last-child { margin-bottom: 0; }
+.ho-entity-group-label { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.45rem; }
+.ho-entity-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+.ho-entity-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1rem; background: var(--bg-raised); cursor: pointer; transition: background 0.2s; gap: 1rem; }
+.ho-entity-row:hover { background: var(--bg); }
+.ho-entity-name { font-size: 0.81rem; font-weight: 500; color: var(--text); }
+.ho-entity-type { font-size: 0.68rem; color: var(--text-dim); margin-top: 0.12rem; }
+.ho-entity-tag { font-size: 0.58rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.5rem; flex-shrink: 0; }
+.ho-tag-company  { background: rgba(80,130,200,0.1);  color: #7aa8d8; border: 1px solid rgba(80,130,200,0.2); }
+.ho-tag-trust    { background: rgba(196,163,90,0.1);  color: var(--gold); border: 1px solid var(--gold-dim); }
+.ho-tag-property { background: rgba(100,160,100,0.1); color: #7abf7a; border: 1px solid rgba(100,160,100,0.2); }
+.ho-tag-wrapper  { background: var(--bg-card); color: var(--text-dim); border: 1px solid var(--border); }
+
+/* Obligations */
+.ho-obligations { border: 1px solid var(--border); background: var(--bg-card); margin-bottom: var(--space-md); }
+.ho-obl-header { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem var(--space-md); border-bottom: 1px solid var(--border); gap: 1rem; flex-wrap: wrap; }
+.ho-obl-title-row { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+.ho-obl-title { font-family: var(--type-display); font-size: 1.25rem; font-weight: 300; color: var(--text); }
+.ho-chips { display: flex; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.ho-chip { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.38rem 0.85rem; background: var(--bg-raised); color: var(--text-dim); cursor: pointer; transition: background 0.2s, color 0.2s; border: none; font-family: var(--type-body); }
+.ho-chip:hover { background: var(--bg-card); color: var(--text-mid); }
+.ho-chip.active { background: var(--bg-card); color: var(--text); }
+.ho-obl-actions { display: flex; gap: 0.75rem; align-items: center; }
+.ho-obl-link { font-size: 0.67rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border-hi); padding-bottom: 1px; transition: color 0.2s; cursor: pointer; }
+.ho-obl-link:hover { color: var(--text-mid); }
+
+.ho-obl-table { width: 100%; border-collapse: collapse; font-size: 0.79rem; }
+.ho-obl-table thead tr { background: var(--bg-raised); }
+.ho-obl-table th { padding: 0.65rem 1rem; text-align: left; font-family: var(--type-body); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+.ho-obl-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-mid); vertical-align: middle; }
+.ho-obl-table tbody tr { background: var(--bg-card); transition: background 0.15s; }
+.ho-obl-table tbody tr:nth-child(even) { background: var(--bg-raised); }
+.ho-obl-table tbody tr:hover { background: rgba(196,163,90,0.03); }
+.ho-obl-table tbody tr:last-child td { border-bottom: none; }
+.ho-obl-table td:first-child { color: var(--text); font-weight: 500; }
+.ho-obl-row--overdue td:first-child { color: #c87060; }
+.ho-date { font-variant-numeric: tabular-nums; }
+
+.ho-status { display: inline-block; font-size: 0.58rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.5rem; white-space: nowrap; }
+.ho-status--planned  { background: var(--bg-raised); color: var(--text-dim); border: 1px solid var(--border); }
+.ho-status--progress { background: rgba(180,120,20,0.12); color: #c4953a; border: 1px solid rgba(180,120,20,0.25); }
+.ho-status--complete { background: rgba(40,140,80,0.1); color: #4aab72; border: 1px solid rgba(40,140,80,0.2); }
+.ho-status--risk     { background: rgba(180,70,50,0.12); color: #c87060; border: 1px solid rgba(180,70,50,0.25); }
+
+.ho-obl-footer { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem var(--space-md); border-top: 1px solid var(--border); }
+.ho-obl-count { font-size: 0.7rem; color: var(--text-dim); }
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-panel { display: none; }
+  #positioning .pos-grid { grid-template-columns: 1fr; }
+  .stat-trio { grid-template-columns: repeat(3,1fr); }
+  #problem .prob-grid { grid-template-columns: 1fr; }
+  #difference .intro-grid { grid-template-columns: 1fr; }
+  #how-it-works .steps { grid-template-columns: repeat(2,1fr); }
+  #features .feature-grid { grid-template-columns: repeat(2,1fr); }
+  .waitlist-grid { grid-template-columns: 1fr; }
+  .waitlist-note { max-width: 100%; }
+  #cta .container { flex-direction: column; align-items: flex-start; }
+  .ho-snapshot { grid-template-columns: 1fr; }
+  .ho-structure { grid-template-columns: 1fr; }
+  .app-nav-links { display: none; }
+}
+
+@media (max-width: 600px) {
+  :root { --space-xl: 4rem; --space-lg: 2.5rem; }
+  .nav-links { display: none; }
+  .stat-trio { grid-template-columns: 1fr; }
+  #how-it-works .steps { grid-template-columns: 1fr; }
+  #features .feature-grid { grid-template-columns: 1fr; }
+  .compare-table th, .compare-table td { padding: 0.7rem 0.9rem; font-size: 0.76rem; }
+  .wl-options { grid-template-columns: 1fr; }
+  .ho-obl-table th:nth-child(4), .ho-obl-table td:nth-child(4) { display: none; }
+  .ho-chips { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero-panel { animation: none; }
+  .pulse-dot { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     VIEW 1 — LANDING PAGE
+════════════════════════════════════════ -->
+<div id="view-landing" class="view active">
+
+  <nav id="nav" role="navigation" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Ledger<span>Layer</span></a>
+      <ul class="nav-links">
+        <li><a href="#positioning">About</a></li>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#features">Capabilities</a></li>
+        <li><a href="#waitlist">Join waitlist</a></li>
+        <li><button class="nav-cta" onclick="showLogin()">Sign in</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <span class="eyebrow reveal">Wealth infrastructure</span>
+          <h1 class="reveal reveal-delay-1">Your household's<br>financial life,<br><em>properly structured.</em></h1>
+          <p class="hero-sub reveal reveal-delay-2">LedgerLayer consolidates assets, entities, advisers, and obligations into a single authoritative view — built for the complexity of affluent households, not simplified away from it.</p>
+          <div class="btn-group reveal reveal-delay-3">
+            <a href="#waitlist" class="btn-primary">Request access</a>
+            <a href="#how-it-works" class="btn-secondary">See how it works</a>
+          </div>
+        </div>
+        <div class="hero-panel reveal reveal-delay-2" aria-hidden="true">
+          <div class="panel-header">
+            <span class="panel-title">Household overview</span>
+            <span class="panel-badge"><span class="pulse-dot"></span>Live</span>
+          </div>
+          <div class="panel-summary">
+            <div class="panel-stat"><div class="panel-stat-label">Net position</div><div class="panel-stat-value">£4.2M</div><div class="panel-stat-sub">Across 6 structures</div></div>
+            <div class="panel-stat"><div class="panel-stat-label">Tax exposure</div><div class="panel-stat-value">£183K</div><div class="panel-stat-sub">Current year estimate</div></div>
+            <div class="panel-stat"><div class="panel-stat-label">Entities</div><div class="panel-stat-value">4</div><div class="panel-stat-sub">Trust · Ltd · SIPP · ISA</div></div>
+            <div class="panel-stat"><div class="panel-stat-label">Advisers</div><div class="panel-stat-value">3</div><div class="panel-stat-sub">Role-based access</div></div>
+          </div>
+          <ul class="panel-list">
+            <li><span>Q4 CGT review</span><span class="panel-tag tag-amber">Due 28 Nov</span></li>
+            <li><span>Trust distribution memo</span><span class="panel-tag tag-green">Signed</span></li>
+            <li><span>ISA rebalance</span><span class="panel-tag tag-neutral">Pending</span></li>
+            <li><span>Mortgage renewal — Primary</span><span class="panel-tag tag-amber">In 60 days</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="positioning" class="section">
+    <div class="container">
+      <span class="eyebrow reveal">What LedgerLayer is</span>
+      <h2 class="reveal reveal-delay-1">The infrastructure layer<br>your wealth has been missing.</h2>
+      <div class="pos-grid">
+        <div class="reveal reveal-delay-2">
+          <p>Most households at this level of complexity hold assets across trusts, companies, pensions, and investment accounts — each managed by a different adviser, tracked in a different system, reported in a different format.</p>
+          <p>LedgerLayer is the authoritative record that sits above all of them. It consolidates positions, surfaces obligations, controls adviser permissions, and gives you a complete, structured view of your household's financial life.</p>
+        </div>
+        <div class="reveal reveal-delay-3">
+          <p>It is not a portfolio tracker. It is not accounting software. It is not a dashboard bolted onto a bank account.</p>
+          <p>It is the system of record that wealth at scale has always required — and that, until now, simply did not exist as a product.</p>
+        </div>
+      </div>
+      <div class="stat-trio">
+        <div class="stat-item reveal"><div class="stat-number">6–12</div><div class="stat-label">Advisers a typical household manages independently</div></div>
+        <div class="stat-item reveal reveal-delay-1"><div class="stat-number">4+</div><div class="stat-label">Legal and financial structures held simultaneously</div></div>
+        <div class="stat-item reveal reveal-delay-2"><div class="stat-number">0</div><div class="stat-label">Existing tools built for this level of household complexity</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="problem" class="section section--alt">
+    <div class="container">
+      <div class="prob-grid">
+        <div>
+          <span class="eyebrow reveal">The problem</span>
+          <h2 class="reveal reveal-delay-1">Complexity<br>without structure.</h2>
+          <p class="reveal reveal-delay-2" style="margin-top:1rem;">As wealth grows, the number of moving parts multiplies. Most households manage this with a collection of spreadsheets, email threads, and quarterly PDF reports from advisers who do not speak to each other.</p>
+          <p class="reveal reveal-delay-3" style="margin-top:1rem;">The result is a picture that is always partial, often delayed, and impossible to act on with confidence.</p>
+        </div>
+        <div class="problem-cards reveal reveal-delay-1">
+          <div class="problem-card"><div class="problem-card-number">01</div><h3>No single source of truth</h3><p>Assets held across institutions, each with its own reporting cadence and format. Consolidation is manual, slow, and error-prone.</p></div>
+          <div class="problem-card"><div class="problem-card-number">02</div><h3>Advisers operating in silos</h3><p>Your solicitor, accountant, wealth manager, and IFA each hold a fragment of the picture. Coordination between them falls to you.</p></div>
+          <div class="problem-card"><div class="problem-card-number">03</div><h3>Obligations tracked by memory</h3><p>Tax deadlines, trust reviews, and mortgage renewals live in inboxes rather than a system that surfaces them in advance.</p></div>
+          <div class="problem-card"><div class="problem-card-number">04</div><h3>Permissions managed informally</h3><p>Deciding who can see what happens by email, with no audit trail and no consistency.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="difference" class="section">
+    <div class="container">
+      <div class="intro-grid">
+        <div><span class="eyebrow reveal">Why existing tools fall short</span><h2 class="reveal reveal-delay-1">Built for a different<br>kind of household.</h2></div>
+        <div class="reveal reveal-delay-2">
+          <p>Consumer finance apps are designed for simplicity. Institutional platforms are designed for institutions. Neither is designed for the reality of a complex household — multiple entities, delegated authority, professional adviser relationships, and the need for control without being the one doing the administration.</p>
+          <p style="margin-top:1rem;">LedgerLayer is designed specifically for that gap.</p>
+        </div>
+      </div>
+      <div class="compare-table-wrap reveal">
+        <table class="compare-table" role="table">
+          <thead><tr><th>Capability</th><th>Consumer apps</th><th>Institutional platforms</th><th>LedgerLayer</th></tr></thead>
+          <tbody>
+            <tr><td>Multi-entity household view</td><td><span class="cross">—</span></td><td><span class="cross">Partial</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Adviser permission management</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Trust and legal structure tracking</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Tax obligation calendar</td><td><span class="cross">Basic</span></td><td><span class="cross">—</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Document and correspondence vault</td><td><span class="cross">—</span></td><td><span class="cross">Limited</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Household member access controls</td><td><span class="cross">—</span></td><td><span class="cross">—</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Designed for non-institutional users</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td><td><span class="check">✓</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="how-it-works" class="section section--alt">
+    <div class="container">
+      <span class="eyebrow reveal">How it works</span>
+      <h2 class="reveal reveal-delay-1">From fragmented<br>to structured, in four steps.</h2>
+      <div class="steps">
+        <div class="step reveal"><div class="step-num">1</div><h3>Map your household</h3><p>Define the individuals, entities, trusts, companies, and accounts that make up your financial life. This becomes the foundation everything else is organised around.</p></div>
+        <div class="step reveal reveal-delay-1"><div class="step-num">2</div><h3>Connect your positions</h3><p>Link accounts and holdings to the correct entity. LedgerLayer aggregates across institutions and gives you a consolidated view at both the entity and household level.</p></div>
+        <div class="step reveal reveal-delay-2"><div class="step-num">3</div><h3>Assign access</h3><p>Give each adviser, family member, or executor precisely the visibility they need. Access is role-based, logged, and revocable.</p></div>
+        <div class="step reveal reveal-delay-3"><div class="step-num">4</div><h3>Stay informed</h3><p>Obligations, deadlines, and portfolio changes surface automatically. Less time assembling information. More time acting on it.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="features" class="section">
+    <div class="container">
+      <span class="eyebrow reveal">Capabilities</span>
+      <h2 class="reveal reveal-delay-1">What LedgerLayer<br>holds together.</h2>
+      <div class="feature-grid">
+        <div class="feature-card reveal">
+          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect x="4" y="8" width="28" height="20" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M4 14h28" stroke="currentColor" stroke-width="1.5"/><path d="M10 20h6M10 24h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3>Tax &amp; obligations</h3><p>Capital gains, income tax, trust distributions, and filing deadlines tracked against your actual positions. Nothing missed because no one was looking.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><path d="M18 4L6 10v8c0 7 5 12 12 14 7-2 12-7 12-14v-8L18 4z" stroke="currentColor" stroke-width="1.5"/><path d="M12 18l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Legal structure tracking</h3><p>Trusts, limited companies, SIPPs, and offshore structures sit in the right place within your household map, with key documents attached and review dates visible.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="24" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M16 14l4 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3>Adviser permissions</h3><p>Each professional sees only what their role requires. Access granted explicitly, scoped precisely, withdrawn cleanly — with a full audit log.</p>
+        </div>
+        <div class="feature-card reveal">
+          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><rect x="5" y="5" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="21" y="5" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="5" y="21" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="21" y="21" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+          <h3>Household entity view</h3><p>Every person, entity, and account in a single structured view. Drill into any entity or surface the aggregate. Both are one click away.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-1">
+          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><path d="M8 28V16M14 28V10M20 28V19M26 28V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3>Consolidated reporting</h3><p>A consistent view of household net worth, asset allocation, and income across all structures — for your use or shared directly with advisers.</p>
+        </div>
+        <div class="feature-card reveal reveal-delay-2">
+          <svg class="feature-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true"><path d="M10 28V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18 10l-8 10h16L18 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M26 28V20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 20h24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3>Succession readiness</h3><p>A document vault for wills, trust deeds, powers of attorney, and beneficiary designations — accessible to the right people at the right time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="waitlist">
+    <div class="container">
+      <div class="waitlist-grid">
+        <div class="waitlist-left reveal">
+          <span class="eyebrow">Early access</span>
+          <h2>Join a select group<br>of early households<br>and <em>their advisers.</em></h2>
+          <p class="waitlist-note">Access is limited. Your responses help us prioritise the features that matter most.</p>
+        </div>
+        <div class="waitlist-right reveal reveal-delay-1">
+          <form id="waitlist-form" novalidate>
+            <div class="wl-field"><label for="wl-name">Full name</label><input type="text" id="wl-name" name="name" autocomplete="name" placeholder="Your full name" required></div>
+            <div class="wl-field"><label for="wl-email">Email address</label><input type="email" id="wl-email" name="email" autocomplete="email" placeholder="you@example.com" required></div>
+            <div class="wl-field">
+              <label>What best describes your situation? <span class="wl-optional">(optional)</span></label>
+              <div class="wl-options">
+                <label class="wl-option"><input type="radio" name="situation" value="complex"><span>Complex household finances</span></label>
+                <label class="wl-option"><input type="radio" name="situation" value="trusts"><span>Trusts / family entities</span></label>
+                <label class="wl-option"><input type="radio" name="situation" value="adviser"><span>Adviser / wealth professional</span></label>
+                <label class="wl-option"><input type="radio" name="situation" value="other"><span>Other</span></label>
+              </div>
+            </div>
+            <div class="wl-error" id="wl-error" aria-live="polite"></div>
+            <button type="submit" class="btn-primary wl-submit">Request early access</button>
+          </form>
+          <div id="waitlist-success" class="wl-success" hidden>
+            <div class="wl-success-inner">
+              <span class="wl-success-mark">&#10003;</span>
+              <h3>You're on the list.</h3>
+              <p>We'll be in touch as access opens. In the meantime, we're reviewing responses to shape what we build first.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cta">
+    <div class="container">
+      <p>Working with households professionally? <a href="mailto:advisers@ledgerlayer.com" style="color:var(--text-mid);border-bottom:1px solid var(--border-hi);padding-bottom:1px;">Adviser enquiries welcome.</a></p>
+      <div class="cta-actions">
+        <a href="mailto:advisers@ledgerlayer.com" class="btn-ghost">Adviser enquiry</a>
+        <a href="#waitlist" class="btn-primary" style="font-size:0.75rem;padding:0.7rem 1.4rem;">Join the waitlist</a>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">LedgerLayer</span>
+      <span class="footer-copy">&copy; 2025 LedgerLayer. All rights reserved.</span>
+    </div>
+  </footer>
+
+</div><!-- /view-landing -->
+
+
+<!-- ═══════════════════════════════════════
+     VIEW 2 — LOGIN
+════════════════════════════════════════ -->
+<div id="view-login" class="view">
+
+  <div class="login-box">
+    <span class="login-logo">Ledger<span>Layer</span></span>
+    <h2 class="login-heading">Sign in</h2>
+    <p class="login-sub">Access your household overview and adviser workspace.</p>
+
+    <div class="login-hint">
+      <strong>Test credentials</strong>
+      james.turner@example.com &nbsp;/&nbsp; Turner2025
+    </div>
+
+    <form id="login-form" novalidate>
+      <div class="login-field">
+        <label for="login-email">Email address</label>
+        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="login-field">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="login-submit">Sign in</button>
+    </form>
+
+    <button class="login-back" onclick="showLanding()">← Back to ledgerlayer.com</button>
+  </div>
+
+</div><!-- /view-login -->
+
+
+<!-- ═══════════════════════════════════════
+     VIEW 3 — APP / DASHBOARD
+════════════════════════════════════════ -->
+<div id="view-app" class="view">
+
+  <nav class="app-nav">
+    <div class="app-nav-inner">
+      <span class="app-logo">Ledger<span>Layer</span></span>
+      <ul class="app-nav-links">
+        <li><a href="#" class="active">Overview</a></li>
+        <li><a href="#">Entities</a></li>
+        <li><a href="#">Obligations</a></li>
+        <li><a href="#">Advisers</a></li>
+        <li><a href="#">Documents</a></li>
+      </ul>
+      <div class="app-nav-right">
+        <span class="app-user">James Turner</span>
+        <button class="app-signout" onclick="showLanding()">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="app-content">
+
+    <header class="ho-header">
+      <div class="ho-header-top">
+        <div>
+          <h1 class="ho-household-name">The Turner Household</h1>
+          <p class="ho-household-desc">UK-based family with an operating company, holding company, and two family trusts. Principal residence in London; investment property in Edinburgh.</p>
+          <div class="ho-badge-row">
+            <span class="ho-badge ho-badge--gold">UK-domiciled</span>
+            <span class="ho-badge">7 entities</span>
+            <span class="ho-badge">3 advisers</span>
+            <span class="ho-badge">4 members</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="ho-snapshot">
+      <div class="ho-snap-tile">
+        <span class="ho-snap-label">Entities</span>
+        <span class="ho-snap-number">7</span>
+        <span class="ho-snap-sub">Companies, trusts, properties, wrappers</span>
+        <a class="ho-snap-link">View all</a>
+      </div>
+      <div class="ho-snap-tile">
+        <span class="ho-snap-label">Advisers</span>
+        <span class="ho-snap-number">3</span>
+        <span class="ho-snap-sub">Tax, legal, investment</span>
+        <a class="ho-snap-link">View directory</a>
+      </div>
+      <div class="ho-snap-tile">
+        <span class="ho-snap-label">This quarter</span>
+        <span class="ho-snap-number">5</span>
+        <span class="ho-snap-sub">1 overdue · 4 upcoming</span>
+        <a class="ho-snap-link">Open obligations</a>
+      </div>
+    </div>
+
+    <div class="ho-structure">
+      <div class="ho-panel">
+        <div class="ho-panel-header">
+          <span class="ho-panel-title">People in this household</span>
+          <button class="ho-btn-ghost">+ Add person</button>
+        </div>
+        <div class="ho-person-list">
+          <div class="ho-person-row"><div class="ho-avatar">JT</div><div class="ho-person-info"><div class="ho-person-name">James Turner</div><div class="ho-person-roles">Principal · Director, Turner Holdings Ltd · Trustee, Turner Family Trust</div></div><span class="ho-chevron">›</span></div>
+          <div class="ho-person-row"><div class="ho-avatar">ST</div><div class="ho-person-info"><div class="ho-person-name">Sarah Turner</div><div class="ho-person-roles">Spouse · Trustee, Turner Family Trust · Beneficiary, Turner Discretionary Trust</div></div><span class="ho-chevron">›</span></div>
+          <div class="ho-person-row"><div class="ho-avatar">OT</div><div class="ho-person-info"><div class="ho-person-name">Oliver Turner</div><div class="ho-person-roles">Child (minor) · Beneficiary, Turner Discretionary Trust</div></div><span class="ho-chevron">›</span></div>
+          <div class="ho-person-row"><div class="ho-avatar">ET</div><div class="ho-person-info"><div class="ho-person-name">Eleanor Turner</div><div class="ho-person-roles">Child (minor) · Beneficiary, Turner Discretionary Trust</div></div><span class="ho-chevron">›</span></div>
+        </div>
+      </div>
+
+      <div class="ho-panel">
+        <div class="ho-panel-header">
+          <span class="ho-panel-title">Entities</span>
+          <button class="ho-btn-ghost">+ Add entity</button>
+        </div>
+        <div class="ho-entity-group">
+          <div class="ho-entity-group-label">Companies</div>
+          <div class="ho-entity-list">
+            <div class="ho-entity-row"><div><div class="ho-entity-name">Turner Holdings Ltd</div><div class="ho-entity-type">Holding company · Reg. England &amp; Wales</div></div><span class="ho-entity-tag ho-tag-company">Ltd</span></div>
+            <div class="ho-entity-row"><div><div class="ho-entity-name">Turner Property Services Ltd</div><div class="ho-entity-type">Operating company · Reg. England &amp; Wales</div></div><span class="ho-entity-tag ho-tag-company">Ltd</span></div>
+          </div>
+        </div>
+        <div class="ho-entity-group">
+          <div class="ho-entity-group-label">Trusts</div>
+          <div class="ho-entity-list">
+            <div class="ho-entity-row"><div><div class="ho-entity-name">Turner Family Trust</div><div class="ho-entity-type">Bare trust · Established 2015</div></div><span class="ho-entity-tag ho-tag-trust">Trust</span></div>
+            <div class="ho-entity-row"><div><div class="ho-entity-name">Turner Discretionary Trust</div><div class="ho-entity-type">Discretionary trust · Established 2019</div></div><span class="ho-entity-tag ho-tag-trust">Trust</span></div>
+          </div>
+        </div>
+        <div class="ho-entity-group">
+          <div class="ho-entity-group-label">Properties</div>
+          <div class="ho-entity-list">
+            <div class="ho-entity-row"><div><div class="ho-entity-name">12 Ladbroke Grove, London</div><div class="ho-entity-type">Principal residence · Freehold</div></div><span class="ho-entity-tag ho-tag-property">Property</span></div>
+            <div class="ho-entity-row"><div><div class="ho-entity-name">4 Thistle Lane, Edinburgh</div><div class="ho-entity-type">Investment property · Leasehold</div></div><span class="ho-entity-tag ho-tag-property">Property</span></div>
+          </div>
+        </div>
+        <div class="ho-entity-group">
+          <div class="ho-entity-group-label">Wrappers &amp; accounts</div>
+          <div class="ho-entity-list">
+            <div class="ho-entity-row"><div><div class="ho-entity-name">James Turner — SIPP</div><div class="ho-entity-type">Self-invested pension · Hargreaves Lansdown</div></div><span class="ho-entity-tag ho-tag-wrapper">SIPP</span></div>
+            <div class="ho-entity-row"><div><div class="ho-entity-name">James Turner — ISA</div><div class="ho-entity-type">Stocks &amp; shares ISA · 2024–25</div></div><span class="ho-entity-tag ho-tag-wrapper">ISA</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ho-obligations">
+      <div class="ho-obl-header">
+        <div class="ho-obl-title-row">
+          <h2 class="ho-obl-title">What's on</h2>
+          <div class="ho-chips">
+            <button class="ho-chip">Overdue</button>
+            <button class="ho-chip active">Next 30 days</button>
+            <button class="ho-chip">This quarter</button>
+            <button class="ho-chip">All</button>
+          </div>
+        </div>
+        <div class="ho-obl-actions">
+          <a class="ho-obl-link">View all obligations</a>
+          <button class="ho-btn-ghost">+ Add obligation</button>
+        </div>
+      </div>
+      <table class="ho-obl-table">
+        <thead><tr><th>Obligation</th><th>Due date</th><th>Entity</th><th>Responsible</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="ho-obl-row--overdue"><td>Turner Property Services — VAT return Q3</td><td class="ho-date">7 Oct 2025</td><td>Turner Property Services Ltd</td><td>Firm A – Tax</td><td><span class="ho-status ho-status--risk">At risk</span></td></tr>
+          <tr><td>Turner Holdings — board resolution re dividend</td><td class="ho-date">15 Nov 2025</td><td>Turner Holdings Ltd</td><td>Household</td><td><span class="ho-status ho-status--progress">In progress</span></td></tr>
+          <tr><td>Turner Family Trust — annual review meeting</td><td class="ho-date">22 Nov 2025</td><td>Turner Family Trust</td><td>Firm B – Legal</td><td><span class="ho-status ho-status--planned">Planned</span></td></tr>
+          <tr><td>James Turner — SIPP contribution (2024–25)</td><td class="ho-date">30 Nov 2025</td><td>James Turner – SIPP</td><td>Household</td><td><span class="ho-status ho-status--planned">Planned</span></td></tr>
+          <tr><td>4 Thistle Lane — landlord safety certificate renewal</td><td class="ho-date">8 Dec 2025</td><td>4 Thistle Lane, Edinburgh</td><td>Household</td><td><span class="ho-status ho-status--planned">Planned</span></td></tr>
+          <tr><td>Turner Property Services — annual accounts filing</td><td class="ho-date">31 Dec 2025</td><td>Turner Property Services Ltd</td><td>Firm A – Tax</td><td><span class="ho-status ho-status--progress">In progress</span></td></tr>
+        </tbody>
+      </table>
+      <div class="ho-obl-footer">
+        <span class="ho-obl-count">Showing 6 obligations · 1 overdue</span>
+        <a class="ho-obl-link">View all →</a>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /view-app -->
+
+
+<script>
+  /* ── View switching ── */
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  function showLanding() { showView('view-landing'); }
+  function showLogin()   { showView('view-login'); document.getElementById('login-error').textContent = ''; document.getElementById('login-form').reset(); }
+  function showApp()     { showView('view-app'); }
+
+  /* ── Login logic ── */
+  const DEMO_EMAIL = 'james.turner@example.com';
+  const DEMO_PASS  = 'Turner2025';
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-password').value;
+    const err   = document.getElementById('login-error');
+
+    if (email === DEMO_EMAIL && pass === DEMO_PASS) {
+      err.textContent = '';
+      showApp();
+    } else {
+      err.textContent = 'Incorrect email or password.';
+    }
+  });
+
+  /* ── Waitlist form ── */
+  document.getElementById('waitlist-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name  = document.getElementById('wl-name').value.trim();
+    const email = document.getElementById('wl-email').value.trim();
+    const re    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const err   = document.getElementById('wl-error');
+    if (!name)               { err.textContent = 'Please enter your full name.'; return; }
+    if (!email || !re.test(email)) { err.textContent = 'Please enter a valid email address.'; return; }
+    err.textContent = '';
+    document.getElementById('waitlist-form').hidden = true;
+    document.getElementById('waitlist-success').hidden = false;
+  });
+
+  /* ── Scroll-reveal (landing only) ── */
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+  setTimeout(() => { document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible')); }, 100);
+
+  /* ── Chip toggle (dashboard) ── */
+  document.querySelectorAll('.ho-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      this.closest('.ho-chips').querySelectorAll('.ho-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
